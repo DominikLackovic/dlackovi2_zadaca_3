@@ -10,6 +10,8 @@ import java.util.List;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
@@ -19,33 +21,137 @@ import org.apache.commons.cli.ParseException;
  */
 public class ArgumentValidator
 {
-
+    private RandomNumberGenerator rng;
+    private int nRows;
+    private int nColumns;
+    private int nRowsCommands;
+    private int avgCorrectness;
     private long seed;
     private String placesFile;
     private String sensorsFile;
     private String actuatorsFile;
-    private String algorithm;
+    private String scheduleFile;
     private int cycleDuration;
-    private int nCycle;
-    private String outputFile;
-    private int outputBuffer;
 
     private final Options options;
     private final CommandLineParser parser;
 
     public ArgumentValidator()
     {
+        this.rng = RandomNumberGenerator.getInstance(seed);
         this.parser = new DefaultParser();
         this.options = new Options();
-        options.addOption("g", true, "Arg1");
-        options.addOption("m", true, "Arg2");
-        options.addOption("s", true, "Arg3");
-        options.addOption("a", true, "Arg4");
-        options.addOption("alg", true, "Arg5");
-        options.addOption("tcd", true, "Arg6");
-        options.addOption("bcd", true, "Arg7");
-        options.addOption("i", true, "Arg8");
-        options.addOption("brl", true, "Arg9");
+        
+        Option br = OptionBuilder.withArgName("br")
+                                .hasArg()
+                                .withDescription("Broj redaka na ekranu (24-40)")
+                                .create("br");
+        
+        Option bs = OptionBuilder.withArgName("bs")
+                                .hasArg()
+                                .withDescription("Broj stupaca na ekranu (80-160)")
+                                .create("bs");
+        
+        Option brk = OptionBuilder.withArgName("brk")
+                                .hasArg()
+                                .withDescription("Broj redaka na ekranu za unos komandi (2-5)")
+                                .create("brk");
+        
+        Option pi = OptionBuilder.withArgName("pi")
+                                .hasArg()
+                                .withDescription("Prosječni % ispravnosti uređaja (0-100)")
+                                .create("pi");
+        
+        Option g = OptionBuilder.withArgName("g")
+                                .hasArg()
+                                .withDescription("Sjeme za generator slučajnog broja (u intervalu 100 - 65535)")
+                                .create("g");
+        
+        Option m = OptionBuilder.withArgName("m")
+                                .hasArg()
+                                .withDescription("Naziv datoteke mjesta")
+                                .create("m");
+        
+        Option s = OptionBuilder.withArgName("s")
+                                .hasArg()
+                                .withDescription("Naziv datoteke senzora")
+                                .create("s");
+        
+        Option a = OptionBuilder.withArgName("a")
+                                .hasArg()
+                                .withDescription("Naziv datoteke aktuatora")
+                                .create("a");
+        
+        Option r = OptionBuilder.withArgName("r")
+                                .hasArg()
+                                .withDescription("Naziv datoteke rasporeda")
+                                .create("r");
+        
+        Option tcd = OptionBuilder.withArgName("tcd")
+                                .hasArg()
+                                .withDescription("Trajanje ciklusa dretve u sek")
+                                .create("tcd");
+        
+        options.addOption(br);
+        options.addOption(bs);
+        options.addOption(brk);
+        options.addOption(pi);
+        options.addOption(g);
+        options.addOption(m);
+        options.addOption(s);
+        options.addOption(a);
+        options.addOption(r);
+        options.addOption(tcd);
+    }
+
+    public RandomNumberGenerator getRng()
+    {
+        return rng;
+    }
+
+    public void setRng(RandomNumberGenerator rng)
+    {
+        this.rng = rng;
+    }
+
+    public int getnRows()
+    {
+        return nRows;
+    }
+
+    public void setnRows(int nRows)
+    {
+        this.nRows = nRows;
+    }
+
+    public int getnColumns()
+    {
+        return nColumns;
+    }
+
+    public void setnColumns(int nColumns)
+    {
+        this.nColumns = nColumns;
+    }
+
+    public int getnRowsCommands()
+    {
+        return nRowsCommands;
+    }
+
+    public void setnRowsCommands(int nRowsCommands)
+    {
+        this.nRowsCommands = nRowsCommands;
+    }
+
+    public int getAvgCorrectness()
+    {
+        return avgCorrectness;
+    }
+
+    public void setAvgCorrectness(int avgCorrectness)
+    {
+        this.avgCorrectness = avgCorrectness;
     }
 
     public long getSeed()
@@ -88,14 +194,14 @@ public class ArgumentValidator
         this.actuatorsFile = actuatorsFile;
     }
 
-    public String getAlgorithm()
+    public String getScheduleFile()
     {
-        return algorithm;
+        return scheduleFile;
     }
 
-    public void setAlgorithm(String algorithm)
+    public void setScheduleFile(String scheduleFile)
     {
-        this.algorithm = algorithm;
+        this.scheduleFile = scheduleFile;
     }
 
     public int getCycleDuration()
@@ -108,36 +214,6 @@ public class ArgumentValidator
         this.cycleDuration = cycleDuration;
     }
 
-    public int getnCycle()
-    {
-        return nCycle;
-    }
-
-    public void setnCycle(int nCycle)
-    {
-        this.nCycle = nCycle;
-    }
-
-    public String getOutputFile()
-    {
-        return outputFile;
-    }
-
-    public void setOutputFile(String outputFile)
-    {
-        this.outputFile = outputFile;
-    }
-
-    public int getOutputBuffer()
-    {
-        return outputBuffer;
-    }
-
-    public void setOutputBuffer(int outputBuffer)
-    {
-        this.outputBuffer = outputBuffer;
-    }
-
     public ValidArguments validate(final String[] args) throws ParseException
     {
         boolean hasError = false;
@@ -145,22 +221,115 @@ public class ArgumentValidator
         System.out.println("Validating arguments...\n-----------------------");
 
         System.out.println("Working directory: " + System.getProperty("user.dir") + "\n");
+        
+        if(args.length == 0)
+        {
+            System.out.println("Missing arguments!");
+            System.exit(0);
+        }
 
         if (args.length == 1 && args[0].equals("--help"))
         {
-            System.out.println("Kod izvršavanja programa upisuju se opcije, s time je njihov redoslije proizvoljan, a mogu biti sljedeće: \n-g sjeme za generator slučajnog broja (u intervalu 100 - 65535). Ako nije upisana opcija, uzima se broj milisekundi u trenutnom vremenu na bazi njegovog broja sekundi i broja milisekundi.\n-m naziv datoteke mjesta -s naziv datoteke senzora -a naziv datoteke aktuatora"
-                    + "\n-alg puni naziv klase algoritma provjere koja se dinamički učitava \n-tcd trajanje ciklusa dretve u sek. Ako nije upisana opcija, uzima se slučajni broj u intervalu 1 - 17. \n-bcd broj ciklusa dretve. Ako nije upisana opcija, uzima se slučajni broj u intervalu 1 - 23. \n-i naziv datoteke u koju se sprema izlaz programa. Ako nije upisana opcija, uzima se vlastito korisničko ime kojem se dodaje trenutni podaci vremena po formatu _ggggmmdd_hhmmss.txt npr. dkermek_20171105_203128.txt \n-brl broj linija u spremniku za upis u datoteku za izlaz. Ako nije upisana opcija, uzima se slučajni broj u intervalu 100 - 999. \n--help pomoć za korištenje opcija u programu");
+            String message = "-br broj redaka na ekranu (24-40)" + System.lineSeparator()
+                    + "-bs broj stupaca na ekranu (80-160)" + System.lineSeparator()
+                    + "-brk broj redaka na ekranu za unos komandi (2-5)" + System.lineSeparator()
+                    + "-pi prosječni % ispravnosti uređaja (0-100)" + System.lineSeparator()
+                    + "-g sjeme za generator slučajnog broja (u intervalu 100 - 65535)"  + System.lineSeparator()
+                    + "-m naziv datoteke mjesta" + System.lineSeparator()
+                    + "-s naziv datoteke senzora" + System.lineSeparator()
+                    + "-a naziv datoteke aktuatora" + System.lineSeparator()
+                    + "-r naziv datoteke rasporeda" + System.lineSeparator()
+                    + "-tcd trajanje ciklusa dretve u sek" + System.lineSeparator()
+                    + "--help pomoć za korištenje opcija u programu" + System.lineSeparator();
+             
             System.exit(0);
         }
  
         CommandLine cmd = parser.parse(options, args);
-        List<String> checkList = Arrays.asList("-g", "-m", "-s", "-a", "-alg", "-tcd", "-bcd", "-i", "-brl");
-        List<String> argsList = Arrays.asList(args);
-        /*if (!argsList.containsAll(checkList))
+       
+        System.out.print("Number of rows: ");
+        if (cmd.getOptionValue("br") == null)
         {
-            System.out.println("Nepotpuni broj argumenata.");
-            System.exit(0);
-        }*/
+            nRows = 24;
+            System.out.println(seed);
+        }
+        else
+        {
+            int s = Integer.valueOf(cmd.getOptionValue("br"));
+            if (s >= 24 && s <= 40)
+            {
+                nRows = s;
+                System.out.println(seed);
+            }
+            else
+            {
+                System.out.println("Error!");
+                hasError = true;
+            }
+        }
+        
+        System.out.print("Number of columns: ");
+        if (cmd.getOptionValue("bs") == null)
+        {
+            nColumns = 80;
+            System.out.println(nColumns);
+        }
+        else
+        {
+            int s = Integer.valueOf(cmd.getOptionValue("bs"));
+            if (s >= 80 && s <= 160)
+            {
+                nColumns = s;
+                System.out.println(nColumns);
+            }
+            else
+            {
+                System.out.println("Error!");
+                hasError = true;
+            }
+        }
+        
+        System.out.print("Number of rows for commands: ");
+        if (cmd.getOptionValue("brk") == null)
+        {
+            nRowsCommands = 2;
+            System.out.println(nColumns);
+        }
+        else
+        {
+            int s = Integer.valueOf(cmd.getOptionValue("brk"));
+            if (s >= 2 && s <= 5)
+            {
+                nRowsCommands = s;
+                System.out.println(nRowsCommands);
+            }
+            else
+            {
+                System.out.println("Error!");
+                hasError = true;
+            }
+        }
+        
+        System.out.print("Average correctness: ");
+        if (cmd.getOptionValue("pi") == null)
+        {
+            avgCorrectness = 50;
+            System.out.println(avgCorrectness);
+        }
+        else
+        {
+            int s = Integer.valueOf(cmd.getOptionValue("pi"));
+            if (s >= 0 && s <= 100)
+            {
+                avgCorrectness = s;
+                System.out.println(avgCorrectness);
+            }
+            else
+            {
+                System.out.println("Error!");
+                hasError = true;
+            }
+        }
 
         System.out.print("Seed: ");
         if (cmd.getOptionValue("g") == null)
@@ -219,24 +388,22 @@ public class ArgumentValidator
             System.out.println("Error!");
             hasError = true;
         }
-
-        List<String> algorithms = Arrays.asList("slijedno", "obrnuto", "random");
-        System.out.print("Algorithm: ");
-        if (cmd.getOptionValue("alg") != null && algorithms.contains(cmd.getOptionValue("alg")))
+        
+        System.out.print("Schedule: ");
+        if (cmd.getOptionValue("r") != null && Files.exists(Paths.get(cmd.getOptionValue("r"))))
         {
-            algorithm = cmd.getOptionValue("alg");
-            System.out.println(algorithm);
+            scheduleFile = cmd.getOptionValue("r");
+            System.out.println(scheduleFile);
         }
         else
         {
             System.out.println("Error!");
             hasError = true;
-        }
+        } 
 
         System.out.print("Cycle duration: ");
         if (cmd.getOptionValue("tcd") == null)
         {
-            RandomNumberGenerator rng = RandomNumberGenerator.getInstance(seed);
             cycleDuration = rng.dajSlucajniBroj(1, 17);
             System.out.println(cycleDuration);
         }
@@ -246,69 +413,6 @@ public class ArgumentValidator
             {
                 cycleDuration = Integer.valueOf(cmd.getOptionValue("tcd"));
                 System.out.println(cycleDuration);
-            }
-            else
-            {
-                System.out.println("Error!");
-                hasError = true;
-            }
-        }
-
-        System.out.print("Number of cycles: ");
-        if (cmd.getOptionValue("bcd") == null)
-        {
-            RandomNumberGenerator rng = RandomNumberGenerator.getInstance(seed);
-            nCycle = rng.dajSlucajniBroj(1, 23);
-            System.out.println(nCycle);
-        }
-        else
-        {
-            if (Integer.valueOf(cmd.getOptionValue("bcd")) == (int) Integer.valueOf(cmd.getOptionValue("bcd")))
-            {
-                nCycle = Integer.valueOf(cmd.getOptionValue("bcd"));
-                System.out.println(nCycle);
-            }
-            else
-            {
-                System.out.println("Error!");
-                hasError = true;
-            }
-        }
-
-        System.out.print("Output: ");
-        if (cmd.getOptionValue("i") == null)
-        {
-            outputFile = "dlackovi2_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).replace(" ", "_").replace("-", "").replace(":", "");
-            System.out.println(outputFile);
-        }
-        else
-        {
-            if (cmd.getOptionValue("i").endsWith(".txt"))
-            {
-                outputFile = cmd.getOptionValue("i");
-                System.out.println(outputFile);
-            }
-            else
-            {
-                System.out.println("Error!");
-                hasError = true;
-            }
-        }
-
-        System.out.print("Output file buffer size: ");
-        if (cmd.getOptionValue("brl") == null)
-        {
-            RandomNumberGenerator rng = RandomNumberGenerator.getInstance(seed);
-            outputBuffer = rng.dajSlucajniBroj(100, 999);
-            System.out.println(outputBuffer);
-        }
-        else
-        {
-            int d = Integer.valueOf(cmd.getOptionValue("brl"));
-            if (d == (int) d)
-            {
-                outputBuffer = d;
-                System.out.println(outputBuffer);
             }
             else
             {
@@ -327,6 +431,6 @@ public class ArgumentValidator
             System.out.println("\nArguments OK.");
         }
 
-        return new ValidArguments(seed, placesFile, sensorsFile, actuatorsFile, algorithm, cycleDuration, nCycle, outputFile, outputBuffer);
+        return new ValidArguments(nRows, nColumns, nRowsCommands, avgCorrectness, seed, placesFile, sensorsFile, actuatorsFile, scheduleFile, cycleDuration);
     }
 }

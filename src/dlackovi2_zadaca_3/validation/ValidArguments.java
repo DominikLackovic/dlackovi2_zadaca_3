@@ -6,27 +6,69 @@ package dlackovi2_zadaca_3.validation;
  */
 public class ValidArguments
 {
+    private int nRows;
+    private int nColumns;
+    private int nRowsCommands;
+    private int avgCorrectness;
     private long seed;
     private String placesFile;
     private String sensorsFile;
     private String actuatorsFile;
-    private String algorithm;
+    private String scheduleFile;
     private int cycleDuration;
-    private int nCycle;
-    private String outputFile;
-    private int outputBuffer;
-    
-    public ValidArguments(long seed, String placesFile, String sensorsFile, String actuatorsFile, String algorithm, int cycleDuration, int nCycle, String outputFile, int outputBuffer)
+
+    public ValidArguments(int nRows, int nColumns, int nRowsCommands, int avgCorrectness, long seed, String placesFile, String sensorsFile, String actuatorsFile, String scheduleFile, int cycleDuration)
     {
+        this.nRows = nRows;
+        this.nColumns = nColumns;
+        this.nRowsCommands = nRowsCommands;
+        this.avgCorrectness = avgCorrectness;
         this.seed = seed;
         this.placesFile = placesFile;
         this.sensorsFile = sensorsFile;
         this.actuatorsFile = actuatorsFile;
-        this.algorithm = algorithm;
+        this.scheduleFile = scheduleFile;
         this.cycleDuration = cycleDuration;
-        this.nCycle = nCycle;
-        this.outputFile = outputFile;
-        this.outputBuffer = outputBuffer;
+    }
+
+    public int getnRows()
+    {
+        return nRows;
+    }
+
+    public void setnRows(int nRows)
+    {
+        this.nRows = nRows;
+    }
+
+    public int getnColumns()
+    {
+        return nColumns;
+    }
+
+    public void setnColumns(int nColumns)
+    {
+        this.nColumns = nColumns;
+    }
+
+    public int getnRowsCommands()
+    {
+        return nRowsCommands;
+    }
+
+    public void setnRowsCommands(int nRowsCommands)
+    {
+        this.nRowsCommands = nRowsCommands;
+    }
+
+    public int getAvgCorrectness()
+    {
+        return avgCorrectness;
+    }
+
+    public void setAvgCorrectness(int avgCorrectness)
+    {
+        this.avgCorrectness = avgCorrectness;
     }
 
     public long getSeed()
@@ -69,14 +111,14 @@ public class ValidArguments
         this.actuatorsFile = actuatorsFile;
     }
 
-    public String getAlgorithm()
+    public String getScheduleFile()
     {
-        return algorithm;
+        return scheduleFile;
     }
 
-    public void setAlgorithm(String algorithm)
+    public void setScheduleFile(String scheduleFile)
     {
-        this.algorithm = algorithm;
+        this.scheduleFile = scheduleFile;
     }
 
     public int getCycleDuration()
@@ -88,36 +130,4 @@ public class ValidArguments
     {
         this.cycleDuration = cycleDuration;
     }
-
-    public int getnCycle()
-    {
-        return nCycle;
-    }
-
-    public void setnCycle(int nCycle)
-    {
-        this.nCycle = nCycle;
-    }
-
-    public String getOutputFile()
-    {
-        return outputFile;
-    }
-
-    public void setOutputFile(String outputFile)
-    {
-        this.outputFile = outputFile;
-    }
-
-    public int getOutputBuffer()
-    {
-        return outputBuffer;
-    }
-
-    public void setOutputBuffer(int outputBuffer)
-    {
-        this.outputBuffer = outputBuffer;
-    }
-    
-    
 }
