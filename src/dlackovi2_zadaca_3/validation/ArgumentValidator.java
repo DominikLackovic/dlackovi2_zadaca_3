@@ -241,7 +241,8 @@ public class ArgumentValidator
                     + "-r naziv datoteke rasporeda" + System.lineSeparator()
                     + "-tcd trajanje ciklusa dretve u sek" + System.lineSeparator()
                     + "--help pomoć za korištenje opcija u programu" + System.lineSeparator();
-             
+            
+            System.out.println(message);
             System.exit(0);
         }
  
