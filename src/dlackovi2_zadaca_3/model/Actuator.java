@@ -25,15 +25,16 @@ public class Actuator extends DeviceRandomStatus implements Cloneable
         
     }
 
-    public Actuator(String naziv, int tip, int vrsta, float minVrijednost, float maxVrijednost, String komentar)
+    public Actuator(int id, String name, int type, int kind, float minValue, float maxValue, String comment)
     {
-        this.name = naziv;
-        this.type = tip;
-        this.kind = vrsta;
-        this.minValue = minVrijednost;
-        this.maxValue = maxVrijednost;
-        this.comment = komentar;
-        value = minVrijednost;
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.kind = kind;
+        this.minValue = minValue;
+        this.maxValue = maxValue;
+        this.comment = comment;
+        value = minValue;
     }
 
     public int getId()

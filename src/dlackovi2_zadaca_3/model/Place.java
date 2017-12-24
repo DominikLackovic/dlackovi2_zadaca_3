@@ -22,13 +22,14 @@ public class Place implements Cloneable
         
     }
 
-    public Place(String naziv, int tip, int brojSenzora, int brojAktuatora, boolean koristi)
+    public Place(int id, String name, int type, int nSensors, int nActuators, boolean usable)
     {
-        this.name = naziv;
-        this.type = tip;
-        this.nSensors = brojSenzora;
-        this.nActuators = brojAktuatora;
-        this.usable = koristi;
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.nSensors = nSensors;
+        this.nActuators = nActuators;
+        this.usable = usable;
     }
 
     public int getId()

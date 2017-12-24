@@ -8,5 +8,6 @@ public enum FileType
 {
     PLACE,
     SENSOR,
-    ACTUATOR
+    ACTUATOR,
+    SCHEDULE
 }
