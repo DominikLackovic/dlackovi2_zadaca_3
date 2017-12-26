@@ -56,14 +56,6 @@ public class Dretva extends Thread
             onCycle++;
             
             System.out.println("Ciklus: " + onCycle);
-            try
-            {
-                fileManager.exportData("Ciklus: " + onCycle);
-            }
-            catch (IOException ex)
-            {
-                Logger.getLogger(Dretva.class.getName()).log(Level.SEVERE, null, ex);
-            }
             
             if (selectedAlgorithm.equals("") || selectedAlgorithm == null || !selectedAlgorithm.equals("slijedno") || !selectedAlgorithm.equals("random") || !selectedAlgorithm.equals("obrnuto"))
             {
@@ -113,14 +105,7 @@ public class Dretva extends Thread
     public synchronized void start()
     {
         System.out.println("Dretva radi...");
-        try
-        {
-            fileManager.exportData("Dretva radi...");
-        }
-        catch (IOException ex)
-        {
-            Logger.getLogger(Dretva.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        
         super.start();
     }
 
@@ -132,7 +117,6 @@ public class Dretva extends Thread
             {
                 Sensor sensor = (Sensor) device;
                 System.out.println("Stanje - Sensor: " + sensor.getName() + " => " + sensor.getValue());
-                fileManager.exportData("Stanje - Sensor: " + sensor.getName() + " => " + sensor.getValue());
                 
                 switch (sensor.getKind())
                 {
@@ -240,7 +224,6 @@ public class Dretva extends Thread
                 {
                     Actuator actuator = (Actuator) device;
                     System.out.println("Stanje - Aktuator: " + actuator.getName() + " => " + actuator.getValue());
-                    fileManager.exportData("Stanje - Aktuator: " + actuator.getName() + " => " + actuator.getValue());
                     
                     switch (actuator.getKind())
                     {

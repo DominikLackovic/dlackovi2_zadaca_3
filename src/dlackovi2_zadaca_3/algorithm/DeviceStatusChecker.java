@@ -30,17 +30,14 @@ public class DeviceStatusChecker
                 {
                     Actuator actuator = (Actuator) device;
                     System.out.print("Provjeravam aktuator: " + actuator.getId() + " " + actuator.getName());
-                    fileManager.exportData("Provjeravam aktuator: " + actuator.getId() + " " + actuator.getName());
                 }
                 else
                 {
                     Sensor sensor = (Sensor) device;
                     System.out.print("Provjeravam senzor: " + sensor.getId() + " " + sensor.getName());
-                    fileManager.exportData("Provjeravam senzor: " + sensor.getId() + " " + sensor.getName());
                 }
                 
                 System.out.println("\nBroj pogresaka za uredaj: " + device.getnErrors());
-                fileManager.exportData("Broj pogresaka za uredaj: " + device.getnErrors());
                 if (device.getnErrors() >= 3)
                 {
                     device.setnErrors(0);
@@ -56,7 +53,6 @@ public class DeviceStatusChecker
                         invalidDevices.add(device);
                         substitutionDevices.add(sensor);
                         System.out.println("Zamjena uredaja: " + ((Sensor) device).getName() + " => " + sensor.getName());
-                        fileManager.exportData("Zamjena uredaja: " + ((Sensor) device).getName() + " => " + sensor.getName());
                     }
                     
                     if (device instanceof Actuator)
@@ -71,7 +67,6 @@ public class DeviceStatusChecker
                         invalidDevices.add(device);
                         substitutionDevices.add(actuator);
                         System.out.println("Zamjena uredaja: " + ((Actuator) device).getName() + " => " + actuator.getName());
-                        fileManager.exportData("Zamjena uredaja: " + ((Actuator) device).getName() + " => " + actuator.getName());
                     }
                 }
             }
@@ -81,17 +76,13 @@ public class DeviceStatusChecker
                 {
                     Actuator actuator = (Actuator) device;
                     System.out.print("Provjeravam aktuator: " + actuator.getId() + " " + actuator.getName());
-                    fileManager.exportData("Provjeravam aktuator: " + actuator.getId() + " " + actuator.getName());
                     System.out.println(" => Ispravan uređaj.");
-                    fileManager.exportData(" => Ispravan uređaj.");
                 }
                 else
                 {
                     Sensor sensor = (Sensor) device;
                     System.out.print("Provjeravam senzor: " + sensor.getId() + " " + sensor.getName());
-                    fileManager.exportData("Provjeravam senzor: " + sensor.getId() + " " + sensor.getName());
                     System.out.println(" => Ispravan uređaj.");
-                    fileManager.exportData(" => Ispravan uređaj.");
                 }  
             }
         }

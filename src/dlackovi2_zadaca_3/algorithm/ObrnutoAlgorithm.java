@@ -39,14 +39,7 @@ public class ObrnutoAlgorithm extends Algorithm
                 if (place.getId() == placeID)
                 {
                     System.out.println("Provjeravam mjesto: " + place.getName() + "\n-------------------");
-                    try
-                    {
-                        fileManager.exportData("Provjeravam mjesto: " + place.getName() + System.lineSeparator() + "-------------------");
-                    }
-                    catch (IOException ex)
-                    {
-                        Logger.getLogger(ObrnutoAlgorithm.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                    
                     try
                     {
                         place.setDevices(DeviceStatusChecker.checkStatus(place.getDevices()));

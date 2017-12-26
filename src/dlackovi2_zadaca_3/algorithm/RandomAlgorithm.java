@@ -46,14 +46,7 @@ public class RandomAlgorithm extends Algorithm
             checkedIDs.add(nextID);
             Place place = places.get(nextID);
             System.out.println("Provjeravam mjesto: " + place.getName() + "\n-------------------");
-            try
-            {
-                fileManager.exportData("Provjeravam mjesto: " + place.getName() + System.lineSeparator() + "-------------------");
-            }
-            catch (IOException ex)
-            {
-                Logger.getLogger(ObrnutoAlgorithm.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            
             try
             {
                 place.setDevices(DeviceStatusChecker.checkStatus(place.getDevices()));
